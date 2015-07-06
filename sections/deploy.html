@@ -1,0 +1,17 @@
+<h1>Deploy</h1>
+
+<p>Before we proceed we need to understand what BOSH needs to deploy software.</p>
+
+<h3>What to deploy</h3>
+<p>Software that is deployed with BOSH needs to be packaged in a special format called <b>release</b>. For each service that will be deployed release needs to contain its source files, configuration files, installation scripts, etc.</p>
+
+<h3>How to deploy</h3>
+<p>Each BOSH deployment needs to provide a specially structured configuration file - <b>deployment manifest</b>. This file defines what resources are going to be deployed, what services are going to be running on each of resources and properties that will be passed to services configuration files.</p>
+
+<p>Learn more:
+<ul>
+<li><a href="http://bosh.io/docs/release.html">bosh.io: Release</a></li>
+<li><a href="http://bosh.io/docs/deployment.html">bosh.io: Deployment</a></li>
+</p>
+
+<button onClick="$.fn.fullpage.moveSlideRight();" id="next-button">Next</button>
