@@ -2,10 +2,12 @@
 <html>
 
 <head>
-  <link rel="stylesheet" type="text/css" href="jquery.fullPage.css" />
   <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
-  <script type="text/javascript" src="js/jquery.fullPage.min.js"></script>
-  <link rel="stylesheet" type="text/css" href="css/jquery.fullPage.css" />
+
+  <script type="text/javascript" src="fullpage_js/vendors/jquery.slimscroll.min.js"></script>
+  <script type="text/javascript" src="fullpage_js/jquery.fullPage.min.js"></script>
+  <link rel="stylesheet" type="text/css" href="fullpage_js/jquery.fullPage.css" />
+  
   <link rel="stylesheet" type="text/css" href="css/style.css" />
 
   <script type="text/javascript">
@@ -13,6 +15,9 @@
         $('#fullpage').fullpage({
           navigation: true,
           navigationPosition: 'right',
+          scrollOverflow: true,
+          anchors: <%= sections.map(&:name) %>,
+          navigationTooltips: <%= sections.map(&:title) %>,
         });
     });
   </script>
@@ -20,12 +25,9 @@
 
 <body>
   <div id="fullpage">
-    <div class="section intro"><div class="center-column"><%= introduction %></div></div>
-    <div class="section prepare"><div class="center-column"><%= prepare %></div></div>
-    <div class="section prepare"><div class="center-column"><%= install_bosh_lite %></div></div>
-    <div class="section prepare"><div class="center-column"><%= install_bosh_cli %></div></div>
-    <div class="section prepare"><div class="center-column"><%= deploy %></div></div>
-    <div class="section prepare"><div class="center-column"><%= create_release %></div></div>
+    <% sections.each do |section| %>
+    <div class="section <%= section.group %>"><div class="center-column"><%= section.contents %></div></div>
+    <% end %>
   </div>
 </body>
 </html>

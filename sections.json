@@ -1,0 +1,32 @@
+{
+  "intro" : {
+    "introduction" : "Introduction"
+  },
+  "prepare" : {
+    "prepare" : "Prepare",
+    "install_bosh_lite": "Install bosh-lite",
+    "install_bosh_cli": "Install bosh cli"
+  },
+  "deploy" : {
+    "deploy" : "Deploy",
+    "create_release" : "Create release",
+    "set_manifest" : "Set manifest",
+    "upload_stemcell" : "Upload stemcell",
+    "run_deploy": "Run deploy"
+  },
+  "modify" : {
+    "modify": "Modify deployment",
+    "modify_release": "Modify release",
+    "scale": "Scale",
+    "change_properties": "Change properties"
+  },
+  "recover" : {
+    "when_something_goes_wrong" : "When something goes wrong",
+    "failing_service": "Failing service",
+    "failing_vm": "Failing VM",
+    "failing_deploy": "Failing deploy"
+  },
+  "last" : {
+    "done" : "Done!"
+  }
+}

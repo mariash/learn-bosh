@@ -21,6 +21,7 @@ a {
 .center-column {
   width: 60%;
   margin-top: 100px;
+  padding: 100px 0px 100px 0px;
   min-width: 900px;
   margin: auto;
 }
@@ -52,6 +53,23 @@ h1 {
   background-color: #F5E8D1;
 }
 
+.deploy {
+  background-color: #D2DFB9;
+}
+
+.modify {
+  background-color: #B2D4E2;
+}
+
+.recover {
+  background-color: #F4D3B0;
+}
+
+.last {
+  background-color: #4AA8C3;
+  color: #d0e6ea;
+}
+
 p {
   font-weight: 400;
   font-size: 1.3em;
@@ -65,9 +83,10 @@ ul {
 }
 
 li {
-  font-size: 1.2em;
+  font-size: 1.3em;
   line-height: 1.3em;
   padding-bottom: 0.5em;
+  font-weight: 400;
 }
 
 b {
@@ -244,7 +263,14 @@ button {
   font-size: 1.3em;
 }
 .terminal-printout-text {
-  color: #235a7c;
+  color: #4A88B1;
+  font-weight: bold;
+  font-family: courier;
+  white-space: pre;
+  font-size: 1.3em;
+}
+.terminal-printout-warning {
+  color: #B40300;
   font-weight: bold;
   font-family: courier;
   white-space: pre;

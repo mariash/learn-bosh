@@ -1,0 +1,41 @@
+<%= circled_title(3, "Debugging failing deploy") %>
+
+<p>When deploy command fails there are could be a number of reasons:</p>
+<ul>
+<li>Invalid network configuration in deployment manifest (e.g. IP address is in use or out of subnet range)</li>
+<li>Infrastructure provider failed to create VM or disk (e.g. quota exceeded, instance type is not available)</li>
+<li>Properties required by release were not provided in manifest</li>
+
+<p>Let's add another job to our manifest <b>router</b> (it will redirect all requests between servers). Note, that since uploaded release already contains this job, we don't need to update release.</p>
+
+<div class="terminal-block">
+  <h4 class="terminal-printout-text">- name: router
+- name: router
+  templates:
+  - name: router
+  instances: 1
+  resource_pool: default
+  networks:
+  - name: default
+    static_ips: [10.244.0.10]</h4>
+</div>
+
+<p>Re-deploy with new job.</p>
+
+<div class="terminal-block">
+  <h4 class="terminal-code-text">$ bosh deploy</h4>
+  <h4 class="terminal-printout-warning">...Failed: `router/0' is not running after update
+  </h4>
+</div>
+
+<p>Oh-oh, looks like deploy failed. Let's get our service logs, untar them and check stderr log.</p>
+
+<div class="terminal-block">
+  <h4 class="terminal-code-text">$ bosh logs router 0</h4>
+</div>
+
+<p>We should find this error: "At least one server must be provided". Router fails to route because there is no servers specified.</p> 
+
+<p>Let's add a property to router job to specify our servers pointing to their static IPs and ports ("http://10.244.0.2:8888", "http://10.244.0.6:8888"), re-deploy and see it succeeds.</p>
+
+<p>Now running <b>curl -L http://10.244.0.10:8888</b> should give us responses from different servers.</p>

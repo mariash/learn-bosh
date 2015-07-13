@@ -1,0 +1,32 @@
+<%= circled_title(3, "Upload stemcell") %>
+
+<p>Stemcell is an operating system image that BOSH is using to create VMs from.</p>
+
+<p>Upload stemcell to <b>Director</b>.</p>
+
+<div class="terminal-block">
+  <h4 class="terminal-code-text">$ bosh upload stemcell https://s3.amazonaws.com/bosh-warden-stemcells/bosh-stemcell-2776-warden-boshlite-ubuntu-trusty-go_agent.tgz</h4>
+</div>
+
+<p>See uploaded stemcells:</p>
+
+<div class="terminal-block">
+  <h4 class="terminal-code-text">$ bosh stemcells</h4>
+  <h4 class="terminal-printout-text">Acting as user 'admin' on 'Bosh Lite Director'
+
++---------------------------------------------+----+---------+----------+
+| Name                                        | OS | Version | CID      |
++---------------------------------------------+----+---------+----------+
+| bosh-warden-boshlite-ubuntu-trusty-go_agent |    | 2776    | ...      |
++---------------------------------------------+----+---------+----------+
+
+(*) Currently in-use
+
+Stemcells total: 1</h4>
+</div>
+
+<p>Learn more:
+<ul>
+<li><a href="http://bosh.io/docs/stemcell.html">bosh.io: What is a Stemcell?</a></li>
+<li><a href="http://bosh.io/stemcells">Full list of available stemcells</a></li>
+</p>

@@ -1,0 +1,42 @@
+<%= circled_title(2, "Scale deployment") %>
+
+<p>With BOSH it is easy to scale deployments. All you need to do is modify number of instances in manifest file.</p>
+
+<p>Open <b>manifest.yml</b> and change number of instances under job from 1 to 2. Add another IP to list of job static IPs: 10.244.0.6.</p>
+
+<p>Run deploy:</p>
+
+<div class="terminal-block">
+  <h4 class="terminal-code-text">$ bosh deploy</h4>
+</div>
+
+<p>Check that 2 VMs were deployed:</p>
+
+<div class="terminal-block">
+  <h4 class="terminal-code-text">$ bosh vms</h4>
+  <h4 class="terminal-printout-text">Acting as user 'admin' on 'Bosh Lite Director'
+Deployment `learn-bosh'
+
+Director task 22
+
+Task 22 done
+
++-----------+---------+---------------+------------+
+| Job/index | State   | Resource Pool | IPs        |
++-----------+---------+---------------+------------+
+| app/0     | running | default       | 10.244.0.2 |
+| app/1     | running | default       | 10.244.0.6 |
++-----------+---------+---------------+------------+
+
+VMs total: 2
+</h4>
+</div>
+
+<p>See that we have 2 instances of our service running:</p>
+
+<div class="terminal-block">
+  <h4 class="terminal-code-text">$ curl 10.244.0.2:8080</h4>
+  <h4 class="terminal-printout-text">Hello, you from &lt;uuid-1&gt;</h4>
+  <h4 class="terminal-code-text">$ curl 10.244.0.6:8080</h4>
+  <h4 class="terminal-printout-text">Hello, you from &lt;uuid-2&gt;</h4>
+</div>
