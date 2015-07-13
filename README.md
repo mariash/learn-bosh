@@ -1,5 +1,7 @@
 # A guide to using BOSH
 
+This is source for BOSH guide - http://mariash.github.io/learn-bosh.
+
 All section files are in `sections` folder.
 
 This guide is using [fullPage.js](https://github.com/alvarotrigo/fullPage.js) because it is fancy.
@@ -23,6 +25,8 @@ When constantly updating, the following command will watch files for updates to 
 ```
 fswatch -o sections -o css/* -o templates/*| xargs -n1 ./generate.rb
 ```
+
+Don't forget to merge to `gh-pages` branch to update github pages.
 
 Helpers available in sections:
 
