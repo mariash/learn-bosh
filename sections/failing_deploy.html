@@ -9,8 +9,7 @@
 <p>Let's add another job to our manifest <b>router</b> (it will redirect all requests between servers). Note, that since uploaded release already contains this job, we don't need to update release.</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-printout-text">
-- name: router
+  <h4 class="terminal-printout-text">- name: router
   templates:
   - name: router
   instances: 1
@@ -34,7 +33,7 @@
   <h4 class="terminal-code-text">$ bosh logs router 0</h4>
 </div>
 
-<p>We should find this error: "At least one server must be provided". Router fails to route because there is no servers specified.</p> 
+<p>We should find this error: "At least one server must be provided". Router fails to route because there is no servers specified.</p>
 
 <p>Let's add a property to router job to specify our servers pointing to their static IPs and ports ("http://10.244.0.2:8888", "http://10.244.0.6:8888"), re-deploy and see it succeeds.</p>
 
