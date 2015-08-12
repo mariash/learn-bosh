@@ -35,6 +35,6 @@
 
 <p>We should find this error: "At least one server must be provided". Router fails to route because there is no servers specified.</p>
 
-<p>Let's add a property to router job to specify our servers pointing to their static IPs and ports ("http://10.244.0.2:8888", "http://10.244.0.6:8888"), re-deploy and see it succeeds.</p>
+<p>Let's add a property to router job to specify our servers pointing to their static IPs and ports ("http://10.244.0.2:8080", "http://10.244.0.6:8888"), re-deploy and see it succeeds.</p>
 
 <p>Now running <b>curl -L http://10.244.0.10:8888</b> should give us responses from different servers.</p>
