@@ -1,6 +1,14 @@
 <%= circled_title(2, "Set Deployment Manifest") %>
 
-<p>Deployment manifest specifies what services to deploy, their properties and resources configuration. Set the deployment manifest:</p>
+<p>Deployment manifest specifies what services to deploy, their properties and resources configuration. The manifest contains a placeholder <b>director_uuid</b> that needs replacing.</p>
+
+<p>Update the <b>director_uuid</b> value in the <b>manifest.yml</b> with the value from:</p>
+
+<div class='terminal-block'>
+  <h4 class="terminal-code-text">$ bosh status</h4>
+</div>
+
+<p>Set the deployment manifest:</p>
 
 <div class="terminal-block">
   <h4 class="terminal-code-text">$ bosh deployment manifest.yml</h4>
