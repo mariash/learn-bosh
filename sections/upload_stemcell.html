@@ -5,7 +5,8 @@
 <p>Upload stemcell to <b>Director</b>.</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh upload stemcell https://bosh.io/d/stemcells/bosh-warden-boshlite-ubuntu-trusty-go_agent</h4>
+  <h4 class="terminal-code-text">$ wget --content-disposition https://bosh.io/d/stemcells/bosh-warden-boshlite-ubuntu-trusty-go_agent</h4>
+  <h4 class="terminal-code-text">$ bosh upload stemcell bosh-stemcell-3147-warden-boshlite-ubuntu-trusty-go_agent.tgz</h4>
 </div>
 
 <p>See uploaded stemcells:</p>
@@ -17,7 +18,7 @@
 +---------------------------------------------+---------+
 | Name                                        | Version |
 +---------------------------------------------+---------+
-| bosh-warden-boshlite-ubuntu-trusty-go_agent | 2776    |
+| bosh-warden-boshlite-ubuntu-trusty-go_agent | 3147    |
 +---------------------------------------------+---------+
 
 (*) Currently in-use
