@@ -20,7 +20,12 @@
 <p>Add route to bosh-lite network:</p>
 <div class="terminal-block">
   <h4 class="terminal-code-text">$ sudo route add -net 10.244.0.0/19 192.168.50.4</h4>
-</div> 
+</div>
+
+<p>If your workstation runs Linux, use this command instead:</p>
+<div class="terminal-block">
+  <h4 class="terminal-code-text">$ sudo ip route add 10.244.0.0/19 via 192.168.50.4</h4>
+</div>
 
 <p>See that our service is up and running.</p>
 
