@@ -1,10 +1,10 @@
 <%= circled_title(1, "Failing service") %>
 
-<p>BOSH is using <a href="https://mmonit.com/monit/">monit</a> to monitor running services. If the service goes down it will bring it up. Let's watch how this works. SSH to one of VMs (provide any temporary password when prompted, same password will be used for sudo):</p>
+<p>BOSH is using <a href="https://mmonit.com/monit/">monit</a> to monitor running services. If the service goes down it will bring it up. Let's watch how this works. SSH to one of VMs:</p>
 
 <div class="terminal-block">
   <h4 class="terminal-code-text">$ bosh ssh app/0</h4>
-  <h4 class="terminal-code-text">$ sudo su</h4>
+  <h4 class="terminal-code-text">$ sudo -i</h4>
   <h4 class="terminal-code-text">$ while monit summary; do sleep 1; done</h4>
   <h4 class="terminal-printout-text">The Monit daemon 5.2.4 uptime: 10m
 
