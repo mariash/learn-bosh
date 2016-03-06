@@ -6,11 +6,9 @@
 
 <div class="terminal-block">
   <h4 class="terminal-code-text">$ vagrant ssh</h4>
-  <h4 class="terminal-code-text">vagrant@agent-id-bosh-0$ sudo apt-get update</h4>
-  <h4 class="terminal-code-text">vagrant@agent-id-bosh-0$ sudo apt-get install curl</h4>
-  <h4 class="terminal-code-text">vagrant@agent-id-bosh-0$ curl http://127.0.0.1:7777/containers</h4>
+  <h4 class="terminal-code-text">vagrant@agent-id-bosh-0$ wget -qO - http://127.0.0.1:7777/containers</h4>
   <h4 class="terminal-printout-text">{"handles":["id-1","id-2"]}</h4>
-  <h4 class="terminal-code-text">vagrant@agent-id-bosh-0$ curl -XDELETE http://127.0.0.1:7777/containers/id-1</h4>
+  <h4 class="terminal-code-text">vagrant@agent-id-bosh-0$ wget -qO - --method=DELETE http://127.0.0.1:7777/containers/id-1</h4>
 </div>
 
 <p>Let's see that one of the VMs is in a bad state:</p>

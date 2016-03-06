@@ -68,7 +68,7 @@
 <p>Bring bosh-lite VM up with vagrant:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ pushd $(mktemp -dt bosh-tutorial)</h4>
+  <h4 class="terminal-code-text">$ pushd $(mktemp -dt bosh-tutorialXXX)</h4>
   <h4 class="terminal-code-text">$ vagrant init cloudfoundry/bosh-lite</h4>
   <h4 class="terminal-code-text">$ vagrant up --provider=virtualbox</h4>
   <h4 class="terminal-printout-text">Bringing machine 'default' up with 'virtualbox' provider...</h4>
@@ -427,12 +427,12 @@ VMs total: 2
   </div>
 </div> 
 
-<p>BOSH is using <a href="https://mmonit.com/monit/">monit</a> to monitor running services. If the service goes down it will bring it up. Let's watch how this works. SSH to one of VMs (provide any temporary password when prompted, same password will be used for sudo):</p>
+<p>BOSH is using <a href="https://mmonit.com/monit/">monit</a> to monitor running services. If the service goes down it will bring it up. Let's watch how this works. SSH to one of VMs:</p>
 
 <div class="terminal-block">
   <h4 class="terminal-code-text">$ bosh ssh app/0</h4>
-  <h4 class="terminal-code-text">$ sudo su</h4>
-  <h4 class="terminal-code-text">$ while monit summary; do sleep 1; done</h4>
+  <h4 class="terminal-code-text">$ sudo -i</h4>
+  <h4 class="terminal-code-text"># watch monit summary</h4>
   <h4 class="terminal-printout-text">The Monit daemon 5.2.4 uptime: 10m
 
 Process 'app'               running
@@ -451,7 +451,8 @@ System 'system_ec1f1ae3-80cb-448b-a024-a24985271f76' running
 <p>Learn more:
 <ul>
 <li><a href="http://bosh.io/docs/vm-monit.html">bosh.io: Process monitoring with Monit</a></li>
-</p></div></div>
+</p>
+</div></div>
     
     <div class="section recover"><div class="center-column"><div class="view-heading">
   <div class="circle-container">
@@ -470,11 +471,9 @@ System 'system_ec1f1ae3-80cb-448b-a024-a24985271f76' running
 
 <div class="terminal-block">
   <h4 class="terminal-code-text">$ vagrant ssh</h4>
-  <h4 class="terminal-code-text">vagrant@agent-id-bosh-0$ sudo apt-get update</h4>
-  <h4 class="terminal-code-text">vagrant@agent-id-bosh-0$ sudo apt-get install curl</h4>
-  <h4 class="terminal-code-text">vagrant@agent-id-bosh-0$ curl http://127.0.0.1:7777/containers</h4>
+  <h4 class="terminal-code-text">vagrant@agent-id-bosh-0$ wget -qO - http://127.0.0.1:7777/containers</h4>
   <h4 class="terminal-printout-text">{"handles":["id-1","id-2"]}</h4>
-  <h4 class="terminal-code-text">vagrant@agent-id-bosh-0$ curl -XDELETE http://127.0.0.1:7777/containers/id-1</h4>
+  <h4 class="terminal-code-text">vagrant@agent-id-bosh-0$ wget -qO - --method=DELETE http://127.0.0.1:7777/containers/id-1</h4>
 </div>
 
 <p>Let's see that one of the VMs is in a bad state:</p>
@@ -503,7 +502,8 @@ System 'system_ec1f1ae3-80cb-448b-a024-a24985271f76' running
 <ul>
 <li><a href="http://bosh.io/docs/cck.html">bosh.io: Manual repair with Cloud Check</a></li>
 <li><a href="http://bosh.io/docs/resurrector.html">bosh.io: Automatic repair with Resurrector</a></li>
-</p></div></div>
+</p>
+</div></div>
     
     <div class="section recover"><div class="center-column"><div class="view-heading">
   <div class="circle-container">
