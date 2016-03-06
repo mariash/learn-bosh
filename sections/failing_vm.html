@@ -15,7 +15,7 @@
 
 <div class="terminal-block">
   <h4 class="terminal-code-text">$ bosh vms</h4>
-  <h4 class="terminal-printout-text">... 
+  <h4 class="terminal-printout-text">...
 +-----------------+--------------------+---------------+------------+
 | Job/index       | State              | Resource Pool | IPs        |
 +-----------------+--------------------+---------------+------------+
@@ -25,16 +25,24 @@
 ...</h4>
 </div>
 
-<p>Run cloud check and select option "Recreate VM".</p>
+<p>One of the components in BOSH is the Health Monitor. It independently watches system health and will bring missing VMs back up. Keep running <b>bosh vms</b> and see that VM is brought up and service is running eventually.</p>
+
+<p>Now let's turn off automatic repair and manually resolve the issue.</p>
+
+<div class="terminal-block">
+  <h4 class="terminal-code-text">$ bosh vm resurrection off</h4>
+</div>
+
+<p>Kill one of the containers again as described above. Run cloud check and select option "Recreate VM".</p>
 
 <div class="terminal-block">
   <h4 class="terminal-code-text">$ bosh cck</h4>
 </div>
 
-<p>Run <b>bosh vms</b> to see all VMs running again.</p>
+<p>Cloud check command allows to manually resolve issues when resources (vms and persistent disks) are in a bad state. Run <b>bosh vms</b> to see all VMs running again.</p>
 
 <p>Learn more:
 <ul>
-<li><a href="http://bosh.io/docs/cck.html">bosh.io: Manual repair with Cloud Check</a></li>
 <li><a href="http://bosh.io/docs/resurrector.html">bosh.io: Automatic repair with Resurrector</a></li>
+<li><a href="http://bosh.io/docs/cck.html">bosh.io: Manual repair with Cloud Check</a></li>
 </p>
