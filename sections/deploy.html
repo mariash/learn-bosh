@@ -3,7 +3,7 @@
 <p>Before we proceed we need to understand what BOSH needs to deploy software.</p>
 
 <h3>What to deploy</h3>
-<p>Software that is deployed with BOSH needs to be packaged in a special format called <b>release</b>. For each service that will be deployed release needs to contain its source files, configuration files, installation scripts, etc. For example, for a redis-release, the source code for redis, redis configuration defaults and redis init scripts are part of the release.</p>
+<p>Software that is deployed with BOSH needs to be packaged in a special format called a <b>release</b>. For each service that will be deployed, a release needs to contain source files, configuration files, installation scripts, etc. For example, a redis release would contain the source code for redis, redis configuration defaults and redis init scripts.</p>
 
 <h3>How to deploy</h3>
 <p>Each BOSH deployment needs to provide a specially structured configuration file - <b>deployment manifest</b>. This file defines what resources are going to be deployed, what services are going to be running on each of resources and properties that will be passed to services configuration files. For example, for a redis deployment manifest, there are entries for how many and what size redis VMs there should be and how redis should be configured.</p>
