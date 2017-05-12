@@ -10,7 +10,6 @@
   "deploy" : {
     "deploy" : "Deploy",
     "create_release" : "Create release",
-    "set_manifest" : "Set manifest",
     "upload_stemcell" : "Upload stemcell",
     "run_deploy": "Run deploy"
   },
