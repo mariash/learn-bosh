@@ -22,15 +22,15 @@
 <p>Re-deploy with new job.</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh deploy</h4>
-  <h4 class="terminal-printout-warning">...Failed: `router/0' is not running after update
+  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh deploy manifest.yml</h4>
+  <h4 class="terminal-printout-warning">...Failed: `router/0 (...)' is not running after update.
   </h4>
 </div>
 
 <p>Oh-oh, looks like deploy failed. Let's get our service logs, untar them and check stderr log.</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh logs router 0</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh logs router/0</h4>
 </div>
 
 <p>We should find this error: "At least one server must be provided". Router fails to route because there is no servers specified.</p>

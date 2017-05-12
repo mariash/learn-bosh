@@ -5,7 +5,7 @@
 <p>Our release allows to change property <b>port</b> on which server is listening. You can see the list of properties that can be modified in <b>learn-bosh-release/jobs/app/spec</b>. Let's open <b>manifest.yml</b> and under the section <b>properties</b> set the value of <b>port</b> to <b>8888</b>. Now we can just re-deploy our manifest changes. Note, we don't need to build new release version, configuration files will be regenerated with new properties.</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh deploy</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh deploy manifest.yml</h4>
 </div>
 
 <p>Let's see that our property was changed:</p>

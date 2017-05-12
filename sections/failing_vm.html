@@ -1,8 +1,8 @@
 <%= circled_title(2, "Failing VM") %>
 
-<p>What if there is a problem with VM that is running our service? BOSH offers manual and automatic recovery when there are problems with infrastructure resources. In this exercise we are going to kill our VM and use manual recovery option.</p>
+<p>What if there is a problem with instance that is running our service? BOSH offers manual and automatic recovery when there are problems with infrastructure resources like VMs or disks. In this exercise we are going to kill one of our instances and use manual recovery option.</p>
 
-<p>Kill one of VMs. bosh-lite is using <b>Warden</b> to manage deployments. Warden is a Linux container management tool. Each container represents one VM. On vagrant VM kill one of Warden containers:</p>
+<p>bosh-lite is using <b>Warden</b> to manage deployments. Warden is a Linux container management tool. Each container represents one instance. On vagrant VM kill one of Warden containers:</p>
 
 <div class="terminal-block">
   <h4 class="terminal-code-text">$ vagrant ssh</h4>
@@ -11,35 +11,32 @@
   <h4 class="terminal-code-text">vagrant@agent-id-bosh-0$ wget -qO - --method=DELETE http://127.0.0.1:7777/containers/id-1</h4>
 </div>
 
-<p>Let's see that one of the VMs is in a bad state:</p>
+<p>Let's see that one of the instances is in a bad state:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh vms</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite instances</h4>
   <h4 class="terminal-printout-text">...
-+-----------------+--------------------+---------------+------------+
-| Job/index       | State              | Resource Pool | IPs        |
-+-----------------+--------------------+---------------+------------+
-| unknown/unknown | unresponsive agent |               |            |
-| app/0           | running            | default       | 10.244.0.2 |
-+-----------------+--------------------+---------------+------------+
+Instance    Process State       IPs
+app/guid-1  running             10.244.0.6
+app/guid-2  unresponsive agent  10.244.0.2
 ...</h4>
 </div>
 
-<p>One of the components in BOSH is the Health Monitor. It independently watches system health and will bring missing VMs back up. Keep running <b>bosh vms</b> and see that VM is brought up and service is running eventually.</p>
+<p>One of the components in BOSH is the Health Monitor. It independently watches system health and will bring missing instances back up by instructing infrastructure to recreate missing resources like VMs with the required persistent disk. Keep running <b>bosh -e lite instances</b> and see that instance is brought up and service is running eventually.</p>
 
 <p>Now let's turn off automatic repair and manually resolve the issue.</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh vm resurrection off</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite update-resurrection off</h4>
 </div>
 
-<p>Kill one of the containers again as described above. Run cloud check and select option "Recreate VM".</p>
+<p>Kill one of the containers again as described above. Run cloud check and select option "Recreate VM and wait for processes to start".</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh cck</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh cloud-check</h4>
 </div>
 
-<p>Cloud check command allows to manually resolve issues when resources (vms and persistent disks) are in a bad state. Run <b>bosh vms</b> to see all VMs running again.</p>
+<p>Cloud check command allows to manually resolve issues when resources (VMs and persistent disks) are in a bad state. Run <b>bosh -e lite instances</b> to see all instances running again.</p>
 
 <p>Learn more:
 <ul>

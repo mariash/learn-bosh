@@ -1,4 +1,4 @@
-<%= circled_title(3, "Upload stemcell") %>
+<%= circled_title(2, "Upload stemcell") %>
 
 <p>A Stemcell is an operating system image that BOSH uses to create VMs. Official BOSH stemcells are maintained with security updates at <a href="https://bosh.io">bosh.io</a>.</p>
 
@@ -6,24 +6,19 @@
 
 <div class="terminal-block">
   <h4 class="terminal-code-text">$ wget --content-disposition https://bosh.io/d/stemcells/bosh-warden-boshlite-ubuntu-trusty-go_agent</h4>
-  <h4 class="terminal-code-text">$ bosh upload stemcell bosh-stemcell-3147-warden-boshlite-ubuntu-trusty-go_agent.tgz</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite upload-stemcell bosh-stemcell-3363.20-warden-boshlite-ubuntu-trusty-go_agent.tgz</h4>
 </div>
 
 <p>See uploaded stemcells:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh stemcells</h4>
-  <h4 class="terminal-printout-text">Acting as user 'admin' on 'Bosh Lite Director'
+  <h4 class="terminal-code-text">$ bosh -e lite stemcells</h4>
+  <h4 class="terminal-printout-text">Using environment '192.168.50.4' as client 'admin'
 
-+---------------------------------------------+---------+
-| Name                                        | Version |
-+---------------------------------------------+---------+
-| bosh-warden-boshlite-ubuntu-trusty-go_agent | 3147    |
-+---------------------------------------------+---------+
+Name                                         Version
+bosh-warden-boshlite-ubuntu-trusty-go_agent  3363.20
 
-(*) Currently in-use
-
-Stemcells total: 1</h4>
+1 stemcells</h4>
 </div>
 
 <p>Learn more:

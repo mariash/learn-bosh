@@ -7,29 +7,22 @@
 <p>Run deploy:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh deploy</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh deploy manifest.yml</h4>
 </div>
 
-<p>Check that 2 VMs were deployed:</p>
+<p>Check that 2 instances were deployed:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh vms</h4>
-  <h4 class="terminal-printout-text">Acting as user 'admin' on 'Bosh Lite Director'
-Deployment `learn-bosh'
+  <h4 class="terminal-code-text">$ bosh -e lite instances</h4>
+  <h4 class="terminal-printout-text">...
+Deployment 'learn-bosh'
 
-Director task 22
+Instance                                  Process State  AZ  IPs
+app/04369f59-b9d7-4246-9b52-551f284b1e7e  running        -   10.244.0.6
+app/e90eaf73-691a-4a4a-8803-c46bf210930f  running        -   10.244.0.2
 
-Task 22 done
-
-+-----------+---------+---------------+------------+
-| Job/index | State   | Resource Pool | IPs        |
-+-----------+---------+---------------+------------+
-| app/0     | running | default       | 10.244.0.2 |
-| app/1     | running | default       | 10.244.0.6 |
-+-----------+---------+---------------+------------+
-
-VMs total: 2
-</h4>
+2 instances
+...</h4>
 </div>
 
 <p>See that we have 2 instances of our service running:</p>

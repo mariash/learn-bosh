@@ -17,8 +17,8 @@
           navigationPosition: 'right',
           scrollOverflow: true,
           css3: false,
-          anchors: ["introduction", "prepare", "install_bosh_lite", "install_bosh_cli", "deploy", "create_release", "set_manifest", "upload_stemcell", "run_deploy", "modify", "modify_release", "scale", "change_properties", "when_something_goes_wrong", "failing_service", "failing_vm", "failing_deploy", "done"],
-          navigationTooltips: ["Introduction", "Prepare", "Install bosh-lite", "Install bosh cli", "Deploy", "Create release", "Set manifest", "Upload stemcell", "Run deploy", "Modify deployment", "Modify release", "Scale", "Change properties", "When something goes wrong", "Failing service", "Failing VM", "Failing deploy", "Done!"],
+          anchors: ["introduction", "prepare", "install_bosh_lite", "install_bosh_cli", "deploy", "create_release", "upload_stemcell", "run_deploy", "modify", "modify_release", "scale", "change_properties", "when_something_goes_wrong", "failing_service", "failing_vm", "failing_deploy", "done"],
+          navigationTooltips: ["Introduction", "Prepare", "Install bosh-lite", "Install bosh cli", "Deploy", "Create release", "Upload stemcell", "Run deploy", "Modify deployment", "Modify release", "Scale", "Change properties", "When something goes wrong", "Failing service", "Failing VM", "Failing deploy", "Done!"],
         });
     });
   </script>
@@ -87,19 +87,39 @@
   </div>
 </div> 
 
-<p>BOSH CLI is a command line interface to the <b>Director</b>. It is distributed as a Ruby gem.</p>
+<p>BOSH CLI is a command line interface to the <b>Director</b>. Follow these <a href="https://bosh.io/docs/cli-v2#install">instructions</a> to install it.</p>
+
+<p>Point your CLI to the bosh-lite environment, saving it with the alias <b>lite</b>. But first save the CA certificate to access bosh-lite <b>Director</b>:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ gem install bosh_cli</h4>
+  <h4 class="terminal-code-text">$ curl -O https://raw.githubusercontent.com/cloudfoundry/bosh-lite/master/ca/certs/ca.crt</h4>
+  <h4 class="terminal-code-text">$ bosh -e 192.168.50.4 alias-env lite --ca-cert ca.crt</h4>
+  <h4 class="terminal-printout-text">Using environment '192.168.50.4' as anonymous user
+
+Name      Bosh Lite Director
+UUID      ...
+Version   260.0.0 (00000000)
+CPI       warden_cpi
+Features  compiled_package_cache: enabled
+          dns: disabled
+          snapshots: disabled
+User      (not logged in)
+
+Succeeded</h4>
 </div>
 
-<p>In case of any issues see <a href="http://bosh.io/docs/bosh-cli.html">detailed installation instructions</a>.</p>
-
-<p>Let CLI know about bosh-lite <b>Director</b> (use admin/admin to log in):</p>
+<p>Log in using admin/admin:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh target 192.168.50.4</h4>
-  <h4 class="terminal-printout-text">Target set to 192.168.50.4</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite login</h4>
+  <h4 class="terminal-printout-text">Username (): admin
+Password ():
+
+Using environment '192.168.50.4' as client 'admin'
+
+Logged in to '192.168.50.4'
+
+Succeeded</h4>
 </div>
 
 <p>Now we are ready to deploy!</p>
@@ -135,32 +155,28 @@
   </div>
 </div> 
 
-<p>We are going to use a simple BOSH release that deploys a sinatra server.</p>
+<p>We are going to use a simple BOSH release that deploys an http server.</p>
 
 <div class="terminal-block">
   <h4 class="terminal-code-text">$ git clone https://github.com/mariash/learn-bosh-release learn-bosh-release</h4>
   <h4 class="terminal-code-text">$ cd learn-bosh-release</h4>
-  <h4 class="terminal-code-text">$ bosh create release</h4>
+  <h4 class="terminal-code-text">$ bosh create-release</h4>
 </div>
 
 <p>Upload generated release to <b>Director</b>:</p>
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh upload release</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite upload-release</h4>
 </div>
 
 <p>Check uploaded releases:</p>
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh releases</h4>
-  <h4 class="terminal-printout-text">Acting as user 'admin' on 'Bosh Lite Director'
+  <h4 class="terminal-code-text">$ bosh -e lite releases</h4>
+  <h4 class="terminal-printout-text">Using environment '192.168.50.4' as client 'admin'
 
-+------------+----------+-------------+
-| Name       | Versions | Commit Hash |
-+------------+----------+-------------+
-| learn-bosh | 0+dev.1  | 1867f1d2    |
-+------------+----------+-------------+   
+Name        Version  Commit Hash
+learn-bosh  0+dev.1  fd90933
 
-Releases total: 1
-  </h4>
+1 releases</h4>
 </div>
 
 <p>Learn more:
@@ -176,38 +192,6 @@ Releases total: 1
     </div>
   </div>
   <div class="view-heading-text-container">
-    <h2>Set Deployment Manifest</h2>
-  </div>
-</div> 
-
-<p>Deployment manifest specifies what services to deploy, their properties and resources configuration. The manifest contains a placeholder <b>director_uuid</b> that needs replacing.</p>
-
-<p>Update the <b>director_uuid</b> value in the <b>manifest.yml</b> with the value from:</p>
-
-<div class='terminal-block'>
-  <h4 class="terminal-code-text">$ bosh status --uuid</h4>
-</div>
-
-<p>Set the deployment manifest:</p>
-
-<div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh deployment manifest.yml</h4>
-  <h4 class="terminal-printout-text">Deployment set to '..learn-bosh-release/manifest.yml'</h4>
-</div>
-
-<p>Learn more:
-<ul>
-<li><a href="http://bosh.io/docs/deployment-manifest.html">bosh.io: Deployment Manifest Schema</a></li>
-</p>
-</div></div>
-    
-    <div class="section deploy"><div class="center-column"><div class="view-heading">
-  <div class="circle-container">
-    <div class="circle-number">
-      <h2>3</h2>
-    </div>
-  </div>
-  <div class="view-heading-text-container">
     <h2>Upload stemcell</h2>
   </div>
 </div> 
@@ -218,24 +202,19 @@ Releases total: 1
 
 <div class="terminal-block">
   <h4 class="terminal-code-text">$ wget --content-disposition https://bosh.io/d/stemcells/bosh-warden-boshlite-ubuntu-trusty-go_agent</h4>
-  <h4 class="terminal-code-text">$ bosh upload stemcell bosh-stemcell-3147-warden-boshlite-ubuntu-trusty-go_agent.tgz</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite upload-stemcell bosh-stemcell-3363.20-warden-boshlite-ubuntu-trusty-go_agent.tgz</h4>
 </div>
 
 <p>See uploaded stemcells:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh stemcells</h4>
-  <h4 class="terminal-printout-text">Acting as user 'admin' on 'Bosh Lite Director'
+  <h4 class="terminal-code-text">$ bosh -e lite stemcells</h4>
+  <h4 class="terminal-printout-text">Using environment '192.168.50.4' as client 'admin'
 
-+---------------------------------------------+---------+
-| Name                                        | Version |
-+---------------------------------------------+---------+
-| bosh-warden-boshlite-ubuntu-trusty-go_agent | 3147    |
-+---------------------------------------------+---------+
+Name                                         Version
+bosh-warden-boshlite-ubuntu-trusty-go_agent  3363.20
 
-(*) Currently in-use
-
-Stemcells total: 1</h4>
+1 stemcells</h4>
 </div>
 
 <p>Learn more:
@@ -248,7 +227,7 @@ Stemcells total: 1</h4>
     <div class="section deploy"><div class="center-column"><div class="view-heading">
   <div class="circle-container">
     <div class="circle-number">
-      <h2>4</h2>
+      <h2>3</h2>
     </div>
   </div>
   <div class="view-heading-text-container">
@@ -256,20 +235,23 @@ Stemcells total: 1</h4>
   </div>
 </div> 
 
+<p>Run deploy by providing path to deployment manifest. Deployment manifest specifies what services to deploy, their properties and resources configuration.</p>
+
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh deploy</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh deploy manifest.yml</h4>
 </div>
 
-<p>See the list of deployed VMs as it was specified in manifest:</p>
+<p>See the list of deployed instances as it was specified in manifest:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh vms</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite instances</h4>
   <h4 class="terminal-printout-text">...
-+-----------+---------+---------------+------------+
-| Job/index | State   | Resource Pool | IPs        |
-+-----------+---------+---------------+------------+
-| app/0     | running | default       | 10.244.0.2 |
-+-----------+---------+---------------+------------+
+Deployment 'learn-bosh'
+
+Instance                                  Process State  AZ  IPs
+app/e90eaf73-691a-4a4a-8803-c46bf210930f  running        -   10.244.0.2
+
+1 instances
 ...</h4>
 </div>
 
@@ -290,10 +272,12 @@ Stemcells total: 1</h4>
   <h4 class="terminal-printout-text">Hello, Maria from ...</h4>
 </div>
 
-<p>Learn more: 
+<p>Learn more:
 <ul>
+<li><a href="http://bosh.io/docs/deployment-manifest.html">bosh.io: Deployment Manifest Schema</a></li>
 <li><a href="http://bosh.io/docs/deploying-step-by-step.html">bosh.io: Deploying Step-by-step</a></li>
-</p></div></div>
+</p>
+</div></div>
     
     <div class="section modify"><div class="center-column"><h1>Modify Deployment</h1>
 
@@ -319,9 +303,9 @@ Stemcells total: 1</h4>
 <p>Create new version of release (force option is used to ignore warning about local changes), upload new version of release to <b>Director</b> and deploy!</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh create release --force</h4>
-  <h4 class="terminal-code-text">$ bosh upload release</h4>
-  <h4 class="terminal-code-text">$ bosh deploy</h4>
+  <h4 class="terminal-code-text">$ bosh create-release --force</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite upload-release</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh deploy manifest.yml</h4>
 </div>
 
 <p>See that the updated version was deployed:</p>
@@ -329,7 +313,8 @@ Stemcells total: 1</h4>
 <div class="terminal-block">
   <h4 class="terminal-code-text">$ curl 10.244.0.2:8080</h4>
   <h4 class="terminal-printout-text">Hello, you from ...</h4>
-</div></div></div>
+</div>
+</div></div>
     
     <div class="section modify"><div class="center-column"><div class="view-heading">
   <div class="circle-container">
@@ -349,29 +334,22 @@ Stemcells total: 1</h4>
 <p>Run deploy:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh deploy</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh deploy manifest.yml</h4>
 </div>
 
-<p>Check that 2 VMs were deployed:</p>
+<p>Check that 2 instances were deployed:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh vms</h4>
-  <h4 class="terminal-printout-text">Acting as user 'admin' on 'Bosh Lite Director'
-Deployment `learn-bosh'
+  <h4 class="terminal-code-text">$ bosh -e lite instances</h4>
+  <h4 class="terminal-printout-text">...
+Deployment 'learn-bosh'
 
-Director task 22
+Instance                                  Process State  AZ  IPs
+app/04369f59-b9d7-4246-9b52-551f284b1e7e  running        -   10.244.0.6
+app/e90eaf73-691a-4a4a-8803-c46bf210930f  running        -   10.244.0.2
 
-Task 22 done
-
-+-----------+---------+---------------+------------+
-| Job/index | State   | Resource Pool | IPs        |
-+-----------+---------+---------------+------------+
-| app/0     | running | default       | 10.244.0.2 |
-| app/1     | running | default       | 10.244.0.6 |
-+-----------+---------+---------------+------------+
-
-VMs total: 2
-</h4>
+2 instances
+...</h4>
 </div>
 
 <p>See that we have 2 instances of our service running:</p>
@@ -381,7 +359,8 @@ VMs total: 2
   <h4 class="terminal-printout-text">Hello, you from &lt;uuid-1&gt;</h4>
   <h4 class="terminal-code-text">$ curl 10.244.0.6:8080</h4>
   <h4 class="terminal-printout-text">Hello, you from &lt;uuid-2&gt;</h4>
-</div></div></div>
+</div>
+</div></div>
     
     <div class="section modify"><div class="center-column"><div class="view-heading">
   <div class="circle-container">
@@ -399,7 +378,7 @@ VMs total: 2
 <p>Our release allows to change property <b>port</b> on which server is listening. You can see the list of properties that can be modified in <b>learn-bosh-release/jobs/app/spec</b>. Let's open <b>manifest.yml</b> and under the section <b>properties</b> set the value of <b>port</b> to <b>8888</b>. Now we can just re-deploy our manifest changes. Note, we don't need to build new release version, configuration files will be regenerated with new properties.</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh deploy</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh deploy manifest.yml</h4>
 </div>
 
 <p>Let's see that our property was changed:</p>
@@ -407,7 +386,8 @@ VMs total: 2
 <div class="terminal-block">
   <h4 class="terminal-code-text">$ curl 10.244.0.2:8888</h4>
   <h4 class="terminal-printout-text">Hello, you from ...</h4>
-</div></div></div>
+</div>
+</div></div>
     
     <div class="section recover"><div class="center-column"><h1>When something goes wrong</h1>
 
@@ -426,16 +406,16 @@ VMs total: 2
   </div>
 </div> 
 
-<p>BOSH is using <a href="https://mmonit.com/monit/">monit</a> to monitor running services. If the service goes down it will bring it up. Let's watch how this works. SSH to one of VMs:</p>
+<p>BOSH is using <a href="https://mmonit.com/monit/">monit</a> to monitor running services. If the service goes down it will bring it up. Let's watch how this works. SSH to one of instances:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh ssh app/0</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh ssh app/0</h4>
   <h4 class="terminal-code-text">$ sudo -i</h4>
   <h4 class="terminal-code-text"># watch monit summary</h4>
-  <h4 class="terminal-printout-text">The Monit daemon 5.2.4 uptime: 10m
+  <h4 class="terminal-printout-text">The Monit daemon 5.2.5 uptime: 2m
 
-Process 'app'               running
-System 'system_ec1f1ae3-80cb-448b-a024-a24985271f76' running
+Process 'app'                       running
+System 'system_localhost'           running
 </h4>
 </div>
 
@@ -445,7 +425,7 @@ System 'system_ec1f1ae3-80cb-448b-a024-a24985271f76' running
   <h4 class="terminal-code-text">$ curl 10.244.0.2:8888/kill</h4>
 </div>
 
-<p>Back in VM window notice that monit will report process as 'Does not exist' and after some period service will be brought back up by monit again.</p>
+<p>Back in the instance window notice that monit will report process as 'Does not exist' and after some period service will be brought back up by monit again.</p>
 
 <p>Learn more:
 <ul>
@@ -464,9 +444,9 @@ System 'system_ec1f1ae3-80cb-448b-a024-a24985271f76' running
   </div>
 </div> 
 
-<p>What if there is a problem with VM that is running our service? BOSH offers manual and automatic recovery when there are problems with infrastructure resources. In this exercise we are going to kill our VM and use manual recovery option.</p>
+<p>What if there is a problem with instance that is running our service? BOSH offers manual and automatic recovery when there are problems with infrastructure resources like VMs or disks. In this exercise we are going to kill one of our instances and use manual recovery option.</p>
 
-<p>Kill one of VMs. bosh-lite is using <b>Warden</b> to manage deployments. Warden is a Linux container management tool. Each container represents one VM. On vagrant VM kill one of Warden containers:</p>
+<p>bosh-lite is using <b>Warden</b> to manage deployments. Warden is a Linux container management tool. Each container represents one instance. On vagrant VM kill one of Warden containers:</p>
 
 <div class="terminal-block">
   <h4 class="terminal-code-text">$ vagrant ssh</h4>
@@ -475,40 +455,38 @@ System 'system_ec1f1ae3-80cb-448b-a024-a24985271f76' running
   <h4 class="terminal-code-text">vagrant@agent-id-bosh-0$ wget -qO - --method=DELETE http://127.0.0.1:7777/containers/id-1</h4>
 </div>
 
-<p>Let's see that one of the VMs is in a bad state:</p>
+<p>Let's see that one of the instances is in a bad state:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh vms</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite instances</h4>
   <h4 class="terminal-printout-text">...
-+-----------------+--------------------+---------------+------------+
-| Job/index       | State              | Resource Pool | IPs        |
-+-----------------+--------------------+---------------+------------+
-| unknown/unknown | unresponsive agent |               |            |
-| app/0           | running            | default       | 10.244.0.2 |
-+-----------------+--------------------+---------------+------------+
+Instance    Process State       IPs
+app/guid-1  running             10.244.0.6
+app/guid-2  unresponsive agent  10.244.0.2
 ...</h4>
 </div>
 
-<p>One of the components in BOSH is the Health Monitor. It independently watches system health and will bring missing VMs back up. Keep running <b>bosh vms</b> and see that VM is brought up and service is running eventually.</p>
+<p>One of the components in BOSH is the Health Monitor. It independently watches system health and will bring missing instances back up by instructing infrastructure to recreate missing resources like VMs with the required persistent disk. Keep running <b>bosh -e lite instances</b> and see that instance is brought up and service is running eventually.</p>
 
 <p>Now let's turn off automatic repair and manually resolve the issue.</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh vm resurrection off</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite update-resurrection off</h4>
 </div>
 
-<p>Kill one of the containers again as described above. Run cloud check and select option "Recreate VM".</p>
+<p>Kill one of the containers again as described above. Run cloud check and select option "Recreate VM and wait for processes to start".</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh cck</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh cloud-check</h4>
 </div>
 
-<p>Cloud check command allows to manually resolve issues when resources (vms and persistent disks) are in a bad state. Run <b>bosh vms</b> to see all VMs running again.</p>
+<p>Cloud check command allows to manually resolve issues when resources (VMs and persistent disks) are in a bad state. Run <b>bosh -e lite instances</b> to see all instances running again.</p>
 
 <p>Learn more:
 <ul>
 <li><a href="http://bosh.io/docs/resurrector.html">bosh.io: Automatic repair with Resurrector</a></li>
 <li><a href="http://bosh.io/docs/cck.html">bosh.io: Manual repair with Cloud Check</a></li>
+<li><a href="http://bosh.io/docs/vm-config.html">bosh.io: Configuration and file locations of BOSH VMs</a></li>
 </p>
 </div></div>
     
@@ -545,15 +523,15 @@ System 'system_ec1f1ae3-80cb-448b-a024-a24985271f76' running
 <p>Re-deploy with new job.</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh deploy</h4>
-  <h4 class="terminal-printout-warning">...Failed: `router/0' is not running after update
+  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh deploy manifest.yml</h4>
+  <h4 class="terminal-printout-warning">...Failed: `router/0 (...)' is not running after update.
   </h4>
 </div>
 
 <p>Oh-oh, looks like deploy failed. Let's get our service logs, untar them and check stderr log.</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh logs router 0</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh logs router/0</h4>
 </div>
 
 <p>We should find this error: "At least one server must be provided". Router fails to route because there is no servers specified.</p>
@@ -567,11 +545,11 @@ System 'system_ec1f1ae3-80cb-448b-a024-a24985271f76' running
 
 <p>In this tutorial we used BOSH to deploy services, updated our deployment with source changes, scaled the number of services and changed their properties. We recovered from failing service, failing VM and failing deploy.</p>
 
-<p>We were using bosh-lite that comes with Warden CPI (Cloud Provider Interface). Warden is a Linux container management tool and Warden CPI abstracts VMs as Linux containers. The Director can work with any CPI that implements a certain API to manage IaaS resources. There are several supported CPIs for different IaaS providers: AWS, Openstack, vSphere and vCloud. Read more about CPIs here: <a href="http://bosh.io/docs/cpi-api-v1.html">http://bosh.io/docs/cpi-api-v1.html</a>.</p>
+<p>We were using bosh-lite that comes with Warden CPI (Cloud Provider Interface). Warden is a Linux container management tool and Warden CPI abstracts VMs as Linux containers. The Director can work with any CPI that implements a certain API to manage IaaS resources. There are several supported CPIs for different IaaS providers: AWS, GCP, Openstack, vSphere and vCloud. Read more about CPIs here: <a href="http://bosh.io/docs/cpi-api-v1.html">http://bosh.io/docs/cpi-api-v1.html</a>.</p>
 
-<p>bosh-lite comes with pre-installed Director. <b>bosh-init</b> provides a way to install initial VM with BOSH Director on any IaaS. Read more about it here: <a href="http://bosh.io/docs/using-bosh-init.html">http://bosh.io/docs/using-bosh-init.html</a>.</p>
+<p>bosh-lite comes with pre-installed Director. <b>bosh create-env</b> command provides a way to install initial VM with BOSH Director on any IaaS. Read more about it <a href="https://bosh.io/docs/cli-v2.html#create-env">here</a>.</p>
 
-<p>Learn more: 
+<p>Learn more:
 <ul>
 <li><a href="https://bosh.io/docs">bosh.io: Docs</a></li>
 </p>

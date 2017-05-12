@@ -1,19 +1,22 @@
-<%= circled_title(4, "And deploy") %>
+<%= circled_title(3, "And deploy") %>
+
+<p>Run deploy by providing path to deployment manifest. Deployment manifest specifies what services to deploy, their properties and resources configuration.</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh deploy</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh deploy manifest.yml</h4>
 </div>
 
-<p>See the list of deployed VMs as it was specified in manifest:</p>
+<p>See the list of deployed instances as it was specified in manifest:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh vms</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite instances</h4>
   <h4 class="terminal-printout-text">...
-+-----------+---------+---------------+------------+
-| Job/index | State   | Resource Pool | IPs        |
-+-----------+---------+---------------+------------+
-| app/0     | running | default       | 10.244.0.2 |
-+-----------+---------+---------------+------------+
+Deployment 'learn-bosh'
+
+Instance                                  Process State  AZ  IPs
+app/e90eaf73-691a-4a4a-8803-c46bf210930f  running        -   10.244.0.2
+
+1 instances
 ...</h4>
 </div>
 
@@ -34,7 +37,8 @@
   <h4 class="terminal-printout-text">Hello, Maria from ...</h4>
 </div>
 
-<p>Learn more: 
+<p>Learn more:
 <ul>
+<li><a href="http://bosh.io/docs/deployment-manifest.html">bosh.io: Deployment Manifest Schema</a></li>
 <li><a href="http://bosh.io/docs/deploying-step-by-step.html">bosh.io: Deploying Step-by-step</a></li>
 </p>

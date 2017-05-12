@@ -7,9 +7,9 @@
 <p>Create new version of release (force option is used to ignore warning about local changes), upload new version of release to <b>Director</b> and deploy!</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh create release --force</h4>
-  <h4 class="terminal-code-text">$ bosh upload release</h4>
-  <h4 class="terminal-code-text">$ bosh deploy</h4>
+  <h4 class="terminal-code-text">$ bosh create-release --force</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite upload-release</h4>
+  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh deploy manifest.yml</h4>
 </div>
 
 <p>See that the updated version was deployed:</p>
