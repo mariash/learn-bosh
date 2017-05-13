@@ -1,0 +1,32 @@
+<%= circled_title(1, "Setup BOSH environment") %>
+
+<p>BOSH CLI is a command line interface to the <b>Director</b>. Follow these <a href="https://bosh.io/docs/cli-v2#install">instructions</a> to install it.</p>
+
+<p>We are going to use <b>bosh create-env</b> command to install BOSH <b>Director</b>. <b>bosh create-env</b> command provides a way to install initial VM with BOSH <b>Director</b> on any IaaS (AWS, GCP, etc). In our case we will use VirtualBox as our infrastructure provider.</p>
+
+<p>First get configuration files that specify BOSH environment in VirtualBox. And run <b>bosh create-env</b> as following:</p>
+
+<div class="terminal-block">
+  <h4 class="terminal-code-text">$ git clone https://github.com/cloudfoundry/bosh-deployment bosh-deployment</h4>
+  <h4 class="terminal-code-text">$ mkdir vbox</h4>
+  <h4 class="terminal-code-text">$ bosh create-env bosh-deployment/bosh.yml \<br>
+  --state vbox/state.json \<br>
+  -o bosh-deployment/virtualbox/cpi.yml \<br>
+  -o bosh-deployment/virtualbox/outbound-network.yml \<br>
+  -o bosh-deployment/bosh-lite.yml \<br>
+  -o bosh-deployment/bosh-lite-runc.yml \<br>
+  -o bosh-deployment/jumpbox-user.yml \<br>
+  --vars-store vbox/creds.yml \<br>
+  -v director_name="Bosh Lite Director" \<br>
+  -v internal_ip=192.168.50.6 \<br>
+  -v internal_gw=192.168.50.1 \<br>
+  -v internal_cidr=192.168.50.0/24 \<br>
+  -v outbound_network_name=NatNetwork</h4>
+</div>
+
+<p>In case of any issues see <a href="https://github.com/cloudfoundry/bosh-deployment/blob/master/docs/bosh-lite-on-vbox.md">bosh-deployment VirtualBox docs</a>.</p>
+
+<p>Learn more:
+<ul>
+<li><a href="https://bosh.io/docs/cli-v2.html#create-env">bosh.io: bosh create-env</a></li>
+</p>
