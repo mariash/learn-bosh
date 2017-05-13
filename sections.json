@@ -4,8 +4,8 @@
   },
   "prepare" : {
     "prepare" : "Prepare",
-    "install_bosh_lite": "Install bosh-lite",
-    "install_bosh_cli": "Install bosh cli"
+    "setup_bosh_environment": "Setup BOSH environment",
+    "log_in": "Log in"
   },
   "deploy" : {
     "deploy" : "Deploy",

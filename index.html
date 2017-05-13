@@ -17,8 +17,8 @@
           navigationPosition: 'right',
           scrollOverflow: true,
           css3: false,
-          anchors: ["introduction", "prepare", "install_bosh_lite", "install_bosh_cli", "deploy", "create_release", "upload_stemcell", "run_deploy", "modify", "modify_release", "scale", "change_properties", "when_something_goes_wrong", "failing_service", "failing_vm", "failing_deploy", "done"],
-          navigationTooltips: ["Introduction", "Prepare", "Install bosh-lite", "Install bosh cli", "Deploy", "Create release", "Upload stemcell", "Run deploy", "Modify deployment", "Modify release", "Scale", "Change properties", "When something goes wrong", "Failing service", "Failing VM", "Failing deploy", "Done!"],
+          anchors: ["introduction", "prepare", "setup_bosh_environment", "log_in", "deploy", "create_release", "upload_stemcell", "run_deploy", "modify", "modify_release", "scale", "change_properties", "when_something_goes_wrong", "failing_service", "failing_vm", "failing_deploy", "done"],
+          navigationTooltips: ["Introduction", "Prepare", "Setup BOSH environment", "Log in", "Deploy", "Create release", "Upload stemcell", "Run deploy", "Modify deployment", "Modify release", "Scale", "Change properties", "When something goes wrong", "Failing service", "Failing VM", "Failing deploy", "Done!"],
         });
     });
   </script>
@@ -43,16 +43,15 @@
     
     <div class="section prepare"><div class="center-column"><h1>Prepare</h1>
 
-<p>We are going to use <b>bosh-lite</b> in this tutorial. <b>bosh-lite</b> is a vagrant VM that comes with pre-installed BOSH server (<b>Director</b>). Once VM with <b>Director</b> is running we are going to use BOSH CLI to send commands to the <b>Director</b>.</p>
+<p>We are going to use local BOSH environment provided by VirtualBox (known working version 5.1+). We will install BOSH server (<b>Director</b>) using BOSH CLI. Once VM with <b>Director</b> is running we are going to use BOSH CLI to send commands to the <b>Director</b>.</p>
 
-<p>Learn more: 
+<p>Learn more:
 <ul>
-<li><a href="https://github.com/cloudfoundry/bosh-lite">github.com/cloudfoundry/bosh-lite</a></li>
-<li><a href="https://bosh.io/docs/bosh-lite.html">bosh.io: BOSH Lite</a></li>
+<li><a href="http://bosh.io/docs/bosh-components.html">bosh.io: Components</a></li>
 </p>
 
-
-<button onClick="$.fn.fullpage.moveSectionDown();" id="next-button">Next</button></div></div>
+<button onClick="$.fn.fullpage.moveSectionDown();" id="next-button">Next</button>
+</div></div>
     
     <div class="section prepare"><div class="center-column"><div class="view-heading">
   <div class="circle-container">
@@ -61,19 +60,40 @@
     </div>
   </div>
   <div class="view-heading-text-container">
-    <h2>Install BOSH-lite</h2>
+    <h2>Setup BOSH environment</h2>
   </div>
 </div> 
 
-<p>Bring bosh-lite VM up with vagrant:</p>
+<p>BOSH CLI is a command line interface to the <b>Director</b>. Follow these <a href="https://bosh.io/docs/cli-v2#install">instructions</a> to install it.</p>
+
+<p>We are going to use <b>bosh create-env</b> command to install BOSH <b>Director</b>. <b>bosh create-env</b> command provides a way to install initial VM with BOSH <b>Director</b> on any IaaS (AWS, GCP, etc). In our case we will use VirtualBox as our infrastructure provider.</p>
+
+<p>First get configuration files that specify BOSH environment in VirtualBox. And run <b>bosh create-env</b> as following:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ vagrant init cloudfoundry/bosh-lite</h4>
-  <h4 class="terminal-code-text">$ vagrant up --provider=virtualbox</h4>
-  <h4 class="terminal-printout-text">Bringing machine 'default' up with 'virtualbox' provider...</h4>
+  <h4 class="terminal-code-text">$ git clone https://github.com/cloudfoundry/bosh-deployment bosh-deployment</h4>
+  <h4 class="terminal-code-text">$ mkdir vbox</h4>
+  <h4 class="terminal-code-text">$ bosh create-env bosh-deployment/bosh.yml \<br>
+  --state vbox/state.json \<br>
+  -o bosh-deployment/virtualbox/cpi.yml \<br>
+  -o bosh-deployment/virtualbox/outbound-network.yml \<br>
+  -o bosh-deployment/bosh-lite.yml \<br>
+  -o bosh-deployment/bosh-lite-runc.yml \<br>
+  -o bosh-deployment/jumpbox-user.yml \<br>
+  --vars-store vbox/creds.yml \<br>
+  -v director_name="Bosh Lite Director" \<br>
+  -v internal_ip=192.168.50.6 \<br>
+  -v internal_gw=192.168.50.1 \<br>
+  -v internal_cidr=192.168.50.0/24 \<br>
+  -v outbound_network_name=NatNetwork</h4>
 </div>
 
-<p>In case of any issues see <a href="https://github.com/cloudfoundry/bosh-lite">bosh-lite's README</a></p>
+<p>In case of any issues see <a href="https://github.com/cloudfoundry/bosh-deployment/blob/master/docs/bosh-lite-on-vbox.md">bosh-deployment VirtualBox docs</a>.</p>
+
+<p>Learn more:
+<ul>
+<li><a href="https://bosh.io/docs/cli-v2.html#create-env">bosh.io: bosh create-env</a></li>
+</p>
 </div></div>
     
     <div class="section prepare"><div class="center-column"><div class="view-heading">
@@ -83,24 +103,22 @@
     </div>
   </div>
   <div class="view-heading-text-container">
-    <h2>Install BOSH CLI</h2>
+    <h2>Log in</h2>
   </div>
 </div> 
 
-<p>BOSH CLI is a command line interface to the <b>Director</b>. Follow these <a href="https://bosh.io/docs/cli-v2#install">instructions</a> to install it.</p>
-
-<p>Point your CLI to the bosh-lite environment, saving it with the alias <b>lite</b>. But first save the CA certificate to access bosh-lite <b>Director</b>:</p>
+<p>Once VM with BOSH <b>Director</b> is running, point your CLI to it, saving the environment with the alias <b>vbox</b>:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ curl -O https://raw.githubusercontent.com/cloudfoundry/bosh-lite/master/ca/certs/ca.crt</h4>
-  <h4 class="terminal-code-text">$ bosh -e 192.168.50.4 alias-env lite --ca-cert ca.crt</h4>
-  <h4 class="terminal-printout-text">Using environment '192.168.50.4' as anonymous user
+  <h4 class="terminal-code-text">$ bosh -e 192.168.50.6 alias-env vbox --ca-cert <(bosh int vbox/creds.yml --path /director_ssl/ca)</h4>
+  <h4 class="terminal-printout-text">Using environment '192.168.50.6' as anonymous user
 
 Name      Bosh Lite Director
 UUID      ...
-Version   260.0.0 (00000000)
+Version   261.4.0 (00000000)
 CPI       warden_cpi
-Features  compiled_package_cache: enabled
+Features  compiled_package_cache: disabled
+          config_server: disabled
           dns: disabled
           snapshots: disabled
 User      (not logged in)
@@ -108,18 +126,16 @@ User      (not logged in)
 Succeeded</h4>
 </div>
 
-<p>Log in using admin/admin:</p>
+<p>Obtain generated password to BOSH <b>Director</b>:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite login</h4>
-  <h4 class="terminal-printout-text">Username (): admin
-Password ():
+<h4 class="terminal-code-text">$ bosh int vbox/creds.yml --path /admin_password</h4>
+</div>
 
-Using environment '192.168.50.4' as client 'admin'
+<p>Log in using <b>admin</b> username and generated password:</p>
 
-Logged in to '192.168.50.4'
-
-Succeeded</h4>
+<div class="terminal-block">
+<h4 class="terminal-code-text">$ bosh -e vbox login</h4>
 </div>
 
 <p>Now we are ready to deploy!</p>
@@ -165,13 +181,13 @@ Succeeded</h4>
 
 <p>Upload generated release to <b>Director</b>:</p>
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite upload-release</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox upload-release</h4>
 </div>
 
 <p>Check uploaded releases:</p>
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite releases</h4>
-  <h4 class="terminal-printout-text">Using environment '192.168.50.4' as client 'admin'
+  <h4 class="terminal-code-text">$ bosh -e vbox releases</h4>
+  <h4 class="terminal-printout-text">Using environment '192.168.50.6' as client 'admin'
 
 Name        Version  Commit Hash
 learn-bosh  0+dev.1  fd90933
@@ -202,14 +218,14 @@ learn-bosh  0+dev.1  fd90933
 
 <div class="terminal-block">
   <h4 class="terminal-code-text">$ wget --content-disposition https://bosh.io/d/stemcells/bosh-warden-boshlite-ubuntu-trusty-go_agent</h4>
-  <h4 class="terminal-code-text">$ bosh -e lite upload-stemcell bosh-stemcell-3363.20-warden-boshlite-ubuntu-trusty-go_agent.tgz</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox upload-stemcell bosh-stemcell-3363.20-warden-boshlite-ubuntu-trusty-go_agent.tgz</h4>
 </div>
 
 <p>See uploaded stemcells:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite stemcells</h4>
-  <h4 class="terminal-printout-text">Using environment '192.168.50.4' as client 'admin'
+  <h4 class="terminal-code-text">$ bosh -e vbox stemcells</h4>
+  <h4 class="terminal-printout-text">Using environment '192.168.50.6' as client 'admin'
 
 Name                                         Version
 bosh-warden-boshlite-ubuntu-trusty-go_agent  3363.20
@@ -238,31 +254,28 @@ bosh-warden-boshlite-ubuntu-trusty-go_agent  3363.20
 <p>Run deploy by providing path to deployment manifest. Deployment manifest specifies what services to deploy, their properties and resources configuration.</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh deploy manifest.yml</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox -d learn-bosh deploy manifest.yml</h4>
 </div>
 
 <p>See the list of deployed instances as it was specified in manifest:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite instances</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox instances</h4>
   <h4 class="terminal-printout-text">...
 Deployment 'learn-bosh'
 
-Instance                                  Process State  AZ  IPs
-app/e90eaf73-691a-4a4a-8803-c46bf210930f  running        -   10.244.0.2
+Instance  Process State  AZ  IPs
+app/guid  running        -   10.244.0.2
 
 1 instances
 ...</h4>
 </div>
 
-<p>Add route to bosh-lite network:</p>
+<p>Add route to VirtualBox network:</p>
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ sudo route add -net 10.244.0.0/19 192.168.50.4</h4>
-</div>
-
-<p>If your workstation runs Linux, use this command instead:</p>
-<div class="terminal-block">
-  <h4 class="terminal-code-text">$ sudo ip route add 10.244.0.0/19 via 192.168.50.4</h4>
+  <h4 class="terminal-code-text">$ sudo route add -net 10.244.0.0/16    192.168.50.6 # Mac OS X</h4>
+  <h4 class="terminal-code-text">$ sudo route add -net 10.244.0.0/16 gw 192.168.50.6 # Linux</h4>
+  <h4 class="terminal-code-text">$ route add           10.244.0.0/16    192.168.50.6 # Windows</h4>
 </div>
 
 <p>See that our service is up and running.</p>
@@ -304,8 +317,8 @@ app/e90eaf73-691a-4a4a-8803-c46bf210930f  running        -   10.244.0.2
 
 <div class="terminal-block">
   <h4 class="terminal-code-text">$ bosh create-release --force</h4>
-  <h4 class="terminal-code-text">$ bosh -e lite upload-release</h4>
-  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh deploy manifest.yml</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox upload-release</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox -d learn-bosh deploy manifest.yml</h4>
 </div>
 
 <p>See that the updated version was deployed:</p>
@@ -334,19 +347,19 @@ app/e90eaf73-691a-4a4a-8803-c46bf210930f  running        -   10.244.0.2
 <p>Run deploy:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh deploy manifest.yml</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox -d learn-bosh deploy manifest.yml</h4>
 </div>
 
 <p>Check that 2 instances were deployed:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite instances</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox instances</h4>
   <h4 class="terminal-printout-text">...
 Deployment 'learn-bosh'
 
-Instance                                  Process State  AZ  IPs
-app/04369f59-b9d7-4246-9b52-551f284b1e7e  running        -   10.244.0.6
-app/e90eaf73-691a-4a4a-8803-c46bf210930f  running        -   10.244.0.2
+Instance    Process State  AZ  IPs
+app/guid-1  running        -   10.244.0.6
+app/guid-2  running        -   10.244.0.2
 
 2 instances
 ...</h4>
@@ -378,7 +391,7 @@ app/e90eaf73-691a-4a4a-8803-c46bf210930f  running        -   10.244.0.2
 <p>Our release allows to change property <b>port</b> on which server is listening. You can see the list of properties that can be modified in <b>learn-bosh-release/jobs/app/spec</b>. Let's open <b>manifest.yml</b> and under the section <b>properties</b> set the value of <b>port</b> to <b>8888</b>. Now we can just re-deploy our manifest changes. Note, we don't need to build new release version, configuration files will be regenerated with new properties.</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh deploy manifest.yml</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox -d learn-bosh deploy manifest.yml</h4>
 </div>
 
 <p>Let's see that our property was changed:</p>
@@ -409,7 +422,7 @@ app/e90eaf73-691a-4a4a-8803-c46bf210930f  running        -   10.244.0.2
 <p>BOSH is using <a href="https://mmonit.com/monit/">monit</a> to monitor running services. If the service goes down it will bring it up. Let's watch how this works. SSH to one of instances:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh ssh app/0</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox -d learn-bosh ssh app/0</h4>
   <h4 class="terminal-code-text">$ sudo -i</h4>
   <h4 class="terminal-code-text"># watch monit summary</h4>
   <h4 class="terminal-printout-text">The Monit daemon 5.2.5 uptime: 2m
@@ -446,19 +459,26 @@ System 'system_localhost'           running
 
 <p>What if there is a problem with instance that is running our service? BOSH offers manual and automatic recovery when there are problems with infrastructure resources like VMs or disks. In this exercise we are going to kill one of our instances and use manual recovery option.</p>
 
-<p>bosh-lite is using <b>Warden</b> to manage deployments. Warden is a Linux container management tool. Each container represents one instance. On vagrant VM kill one of Warden containers:</p>
+<p>Lets destroy one of our instances. SSH to VirtualBox VM.</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ vagrant ssh</h4>
-  <h4 class="terminal-code-text">vagrant@agent-id-bosh-0$ wget -qO - http://127.0.0.1:7777/containers</h4>
+  <h4 class="terminal-code-text">$ bosh int vbox/creds.yml --path /jumpbox_ssh/private_key > jumpbox.key</h4>
+  <h4 class="terminal-code-text">$ chmod 600 jumpbox.key</h4>
+  <h4 class="terminal-code-text">$ ssh jumpbox@192.168.50.6 -i jumpbox.key</h4>
+</div>
+
+<p>Our VirtualBox environment is using <b>Warden</b> to manage resources. Warden is a Linux container management tool. Each container represents one instance. On VirtualBox VM kill one of Warden containers.</p>
+
+<div class="terminal-block">
+  <h4 class="terminal-code-text">$ wget -qO - http://127.0.0.1:7777/containers</h4>
   <h4 class="terminal-printout-text">{"handles":["id-1","id-2"]}</h4>
-  <h4 class="terminal-code-text">vagrant@agent-id-bosh-0$ wget -qO - --method=DELETE http://127.0.0.1:7777/containers/id-1</h4>
+  <h4 class="terminal-code-text">$ wget -qO - --method=DELETE http://127.0.0.1:7777/containers/id-1</h4>
 </div>
 
 <p>Let's see that one of the instances is in a bad state:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite instances</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox instances</h4>
   <h4 class="terminal-printout-text">...
 Instance    Process State       IPs
 app/guid-1  running             10.244.0.6
@@ -466,21 +486,21 @@ app/guid-2  unresponsive agent  10.244.0.2
 ...</h4>
 </div>
 
-<p>One of the components in BOSH is the Health Monitor. It independently watches system health and will bring missing instances back up by instructing infrastructure to recreate missing resources like VMs with the required persistent disk. Keep running <b>bosh -e lite instances</b> and see that instance is brought up and service is running eventually.</p>
+<p>One of the components in BOSH is the Health Monitor. It independently watches system health and will bring missing instances back up by instructing infrastructure to recreate missing resources like VMs with the required persistent disk. Keep running <b>bosh -e vbox instances</b> and see that instance is brought up and service is running eventually.</p>
 
 <p>Now let's turn off automatic repair and manually resolve the issue.</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite update-resurrection off</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox update-resurrection off</h4>
 </div>
 
 <p>Kill one of the containers again as described above. Run cloud check and select option "Recreate VM and wait for processes to start".</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh cloud-check</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox -d learn-bosh cloud-check</h4>
 </div>
 
-<p>Cloud check command allows to manually resolve issues when resources (VMs and persistent disks) are in a bad state. Run <b>bosh -e lite instances</b> to see all instances running again.</p>
+<p>Cloud check command allows to manually resolve issues when resources (VMs and persistent disks) are in a bad state. Run <b>bosh -e vbox instances</b> to see all instances running again.</p>
 
 <p>Learn more:
 <ul>
@@ -523,7 +543,7 @@ app/guid-2  unresponsive agent  10.244.0.2
 <p>Re-deploy with new job.</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh deploy manifest.yml</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox -d learn-bosh deploy manifest.yml</h4>
   <h4 class="terminal-printout-warning">...Failed: `router/0 (...)' is not running after update.
   </h4>
 </div>
@@ -531,7 +551,7 @@ app/guid-2  unresponsive agent  10.244.0.2
 <p>Oh-oh, looks like deploy failed. Let's get our service logs, untar them and check stderr log.</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh logs router/0</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox -d learn-bosh logs router/0</h4>
 </div>
 
 <p>We should find this error: "At least one server must be provided". Router fails to route because there is no servers specified.</p>
@@ -545,9 +565,7 @@ app/guid-2  unresponsive agent  10.244.0.2
 
 <p>In this tutorial we used BOSH to deploy services, updated our deployment with source changes, scaled the number of services and changed their properties. We recovered from failing service, failing VM and failing deploy.</p>
 
-<p>We were using bosh-lite that comes with Warden CPI (Cloud Provider Interface). Warden is a Linux container management tool and Warden CPI abstracts VMs as Linux containers. The Director can work with any CPI that implements a certain API to manage IaaS resources. There are several supported CPIs for different IaaS providers: AWS, GCP, Openstack, vSphere and vCloud. Read more about CPIs here: <a href="http://bosh.io/docs/cpi-api-v1.html">http://bosh.io/docs/cpi-api-v1.html</a>.</p>
-
-<p>bosh-lite comes with pre-installed Director. <b>bosh create-env</b> command provides a way to install initial VM with BOSH Director on any IaaS. Read more about it <a href="https://bosh.io/docs/cli-v2.html#create-env">here</a>.</p>
+<p>We were using VirtualBox environment with Warden CPI (Cloud Provider Interface). Warden is a Linux container management tool and Warden CPI abstracts VMs as Linux containers. The Director can work with any CPI that implements a certain API to manage IaaS resources. There are several supported CPIs for different IaaS providers: AWS, GCP, Openstack, vSphere and vCloud. Read more about CPIs here: <a href="http://bosh.io/docs/cpi-api-v1.html">http://bosh.io/docs/cpi-api-v1.html</a>.</p>
 
 <p>Learn more:
 <ul>

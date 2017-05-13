@@ -3,31 +3,28 @@
 <p>Run deploy by providing path to deployment manifest. Deployment manifest specifies what services to deploy, their properties and resources configuration.</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh deploy manifest.yml</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox -d learn-bosh deploy manifest.yml</h4>
 </div>
 
 <p>See the list of deployed instances as it was specified in manifest:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite instances</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox instances</h4>
   <h4 class="terminal-printout-text">...
 Deployment 'learn-bosh'
 
-Instance                                  Process State  AZ  IPs
-app/e90eaf73-691a-4a4a-8803-c46bf210930f  running        -   10.244.0.2
+Instance  Process State  AZ  IPs
+app/guid  running        -   10.244.0.2
 
 1 instances
 ...</h4>
 </div>
 
-<p>Add route to bosh-lite network:</p>
+<p>Add route to VirtualBox network:</p>
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ sudo route add -net 10.244.0.0/19 192.168.50.4</h4>
-</div>
-
-<p>If your workstation runs Linux, use this command instead:</p>
-<div class="terminal-block">
-  <h4 class="terminal-code-text">$ sudo ip route add 10.244.0.0/19 via 192.168.50.4</h4>
+  <h4 class="terminal-code-text">$ sudo route add -net 10.244.0.0/16    192.168.50.6 # Mac OS X</h4>
+  <h4 class="terminal-code-text">$ sudo route add -net 10.244.0.0/16 gw 192.168.50.6 # Linux</h4>
+  <h4 class="terminal-code-text">$ route add           10.244.0.0/16    192.168.50.6 # Windows</h4>
 </div>
 
 <p>See that our service is up and running.</p>

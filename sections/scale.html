@@ -7,19 +7,19 @@
 <p>Run deploy:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite -d learn-bosh deploy manifest.yml</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox -d learn-bosh deploy manifest.yml</h4>
 </div>
 
 <p>Check that 2 instances were deployed:</p>
 
 <div class="terminal-block">
-  <h4 class="terminal-code-text">$ bosh -e lite instances</h4>
+  <h4 class="terminal-code-text">$ bosh -e vbox instances</h4>
   <h4 class="terminal-printout-text">...
 Deployment 'learn-bosh'
 
-Instance                                  Process State  AZ  IPs
-app/04369f59-b9d7-4246-9b52-551f284b1e7e  running        -   10.244.0.6
-app/e90eaf73-691a-4a4a-8803-c46bf210930f  running        -   10.244.0.2
+Instance    Process State  AZ  IPs
+app/guid-1  running        -   10.244.0.6
+app/guid-2  running        -   10.244.0.2
 
 2 instances
 ...</h4>
